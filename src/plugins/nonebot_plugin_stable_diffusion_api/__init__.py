@@ -4,10 +4,10 @@ from random import randint
 
 import nonebot
 from colorama import Fore
-from nonebot import on_command
 from nonebot import logger
 from nonebot.adapters.onebot.v12 import GroupMessageEvent, Bot, MessageSegment, ActionFailed
 from nonebot.params import CommandArg, RegexDict
+from nonebot.plugin.on import on_command
 
 from .config import Config
 from .worker import get_data
@@ -19,9 +19,11 @@ queue = Queue()
 user_task_dict = {}
 
 drawer = on_command("AI画图", priority=5)
+logger.info("ai画图启动")
 
 try:
     post_url = config.stable_url
+    logger.info(post_url)
 except AttributeError:
     post_url = ""
     logger.warning("could not fetch stable diffusion url, check your config")
