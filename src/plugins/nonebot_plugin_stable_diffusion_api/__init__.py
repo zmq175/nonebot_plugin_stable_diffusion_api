@@ -12,7 +12,7 @@ from .config import Config
 from .worker import get_data
 
 from nonebot import require
-from taskQueue import TaskQueue
+from .taskQueue import TaskQueue
 
 require("nonebot_plugin_apscheduler")
 
