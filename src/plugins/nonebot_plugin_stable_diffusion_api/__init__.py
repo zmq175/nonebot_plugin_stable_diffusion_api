@@ -33,6 +33,7 @@ async def handle_queue():
     while True:
         # 从队列中取出任务
         task = await queue.get()
+        logger.info(f"运行任务")
         # 运行任务
         await task
         # 任务运行完成后，将其从user_task_dict中删除
@@ -127,3 +128,6 @@ async def drawer_task(event: GroupMessageEvent, bot: Bot, regex: dict = RegexDic
         msg_id = (await drawer.send(msg, at_sender=True))["message_id"]
     except ActionFailed:
         logger.warning(Fore.LIGHTYELLOW_EX + f"可能被风控，请稍后再试！")
+
+await loop.run_forever()
+
