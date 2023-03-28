@@ -1,3 +1,4 @@
+from asyncio import Queue, create_task
 from base64 import b64decode
 from random import randint
 
@@ -14,6 +15,9 @@ from .worker import get_data
 global_config = nonebot.get_driver().config
 config = Config.parse_obj(global_config)
 
+queue = Queue()
+user_task_dict = {}
+
 drawer = on_command("AI画图", priority=5)
 
 try:
@@ -22,9 +26,24 @@ except AttributeError:
     post_url = ""
     logger.warning("could not fetch stable diffusion url, check your config")
 
-
 @drawer.handle()
 async def drawer_handle(event: GroupMessageEvent, bot: Bot, regex: dict = RegexDict()):
+    id_ = event.get_user_id()
+
+    # 检查当前用户是否已有未完成任务
+    if id_ in user_task_dict:
+        drawer.finish("你有任务正在排队，请耐心等待！", at_sender=True)
+        return
+
+    # 创建一个任务并添加到队列中
+    task = create_task(drawer_task(event, bot, regex))
+    user_task_dict[id_] = task
+    if not queue.empty():
+        name = (await bot.get_stranger_info(user_id=int(id_)))["nickname"]
+        await drawer.send(f"您的前面还有{queue.qsize()}个任务，已提交任务，请耐心等待！", at_sender=True)
+    await queue.put(task)
+
+async def drawer_task(event: GroupMessageEvent, bot: Bot, regex: dict = RegexDict()):
     id_ = event.get_user_id()
 
     seed = regex["seed"]
