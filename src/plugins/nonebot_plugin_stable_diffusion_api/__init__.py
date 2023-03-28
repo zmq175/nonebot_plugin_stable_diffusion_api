@@ -7,7 +7,7 @@ from colorama import Fore
 from nonebot import logger
 from nonebot.adapters.onebot.v12 import GroupMessageEvent, Bot, MessageSegment, ActionFailed
 from nonebot.params import CommandArg, RegexDict
-from nonebot.plugin.on import on_command
+from nonebot.plugin.on import on_command\
 
 from .config import Config
 from .worker import get_data
@@ -33,6 +33,8 @@ except AttributeError:
     post_url = ""
     logger.warning("could not fetch stable diffusion url, check your config")
 
+loop = get_event_loop()
+
 
 @drawer.handle()
 async def drawer_handle(event: GroupMessageEvent, bot: Bot, regex: dict = RegexDict()):
@@ -45,7 +47,7 @@ async def drawer_handle(event: GroupMessageEvent, bot: Bot, regex: dict = RegexD
         return
 
     # 创建一个任务并添加到队列中
-    task = create_task(drawer_task(event, bot, regex))
+    task = loop.create_task(drawer_task(event, bot, regex))
     user_task_dict[id_] = task
     if not taskQueue.empty():
         name = (await bot.get_stranger_info(user_id=int(id_)))["nickname"]
