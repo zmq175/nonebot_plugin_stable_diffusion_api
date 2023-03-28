@@ -1,4 +1,4 @@
-from asyncio import Queue, create_task
+from asyncio import Queue, create_task, get_event_loop
 from base64 import b64decode
 from random import randint
 
@@ -28,6 +28,21 @@ except AttributeError:
     post_url = ""
     logger.warning("could not fetch stable diffusion url, check your config")
 
+loop = get_event_loop()
+async def handle_queue():
+    while True:
+        # 从队列中取出任务
+        task = await queue.get()
+        # 运行任务
+        await task
+        # 任务运行完成后，将其从user_task_dict中删除
+        id_ = task._coro.cr_frame.f_locals['event'].get_user_id()
+        del user_task_dict[id_]
+        # 通知下一个任务可以开始了
+        queue.task_done()
+
+loop.create_task(handle_queue())
+
 @drawer.handle()
 async def drawer_handle(event: GroupMessageEvent, bot: Bot, regex: dict = RegexDict()):
     id_ = event.get_user_id()
@@ -44,6 +59,7 @@ async def drawer_handle(event: GroupMessageEvent, bot: Bot, regex: dict = RegexD
         name = (await bot.get_stranger_info(user_id=int(id_)))["nickname"]
         await drawer.send(f"您的前面还有{queue.qsize()}个任务，已提交任务，请耐心等待！", at_sender=True)
     await queue.put(task)
+
 
 async def drawer_task(event: GroupMessageEvent, bot: Bot, regex: dict = RegexDict()):
     id_ = event.get_user_id()
@@ -95,7 +111,7 @@ async def drawer_task(event: GroupMessageEvent, bot: Bot, regex: dict = RegexDic
         post_url=post_url + "sdapi/v1/txt2img",
         size=size,
         prompt=prompt,
-        timeout=10*60*1000,
+        timeout=10 * 60 * 1000,
         uc=uc, steps=steps,
         scale=scale,
         seed=seed
