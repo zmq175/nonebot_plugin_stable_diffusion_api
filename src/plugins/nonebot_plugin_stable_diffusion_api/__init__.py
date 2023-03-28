@@ -23,10 +23,11 @@ logger.info("ai画图启动")
 
 try:
     post_url = config.stable_url
-    logger.info(post_url)
+    logger.info(f"post_url: {post_url}")
 except AttributeError:
     post_url = ""
     logger.warning("could not fetch stable diffusion url, check your config")
+
 
 @drawer.handle()
 async def drawer_handle(event: GroupMessageEvent, bot: Bot, regex: dict = RegexDict()):
@@ -131,7 +132,7 @@ async def handle_queue():
         # 通知下一个任务可以开始了
         queue.task_done()
 
+
 loop.create_task(handle_queue())
 logger.info("尝试运行loop")
-
-
+loop.run_forever()
