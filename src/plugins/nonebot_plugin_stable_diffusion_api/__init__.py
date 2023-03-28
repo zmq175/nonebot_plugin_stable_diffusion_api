@@ -129,5 +129,5 @@ async def drawer_task(event: GroupMessageEvent, bot: Bot, regex: dict = RegexDic
     except ActionFailed:
         logger.warning(Fore.LIGHTYELLOW_EX + f"可能被风控，请稍后再试！")
 
-await loop.run_forever()
+loop.run_forever()
 
