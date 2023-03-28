@@ -21,7 +21,7 @@ from nonebot_plugin_apscheduler import scheduler
 global_config = nonebot.get_driver().config
 config = Config.parse_obj(global_config)
 
-taskQueue = TaskQueue
+taskQueue = TaskQueue()
 user_task_dict = {}
 
 drawer = on_command("AI画图", priority=5)
@@ -124,4 +124,3 @@ async def drawer_task(event: GroupMessageEvent, bot: Bot, regex: dict = RegexDic
         logger.warning(Fore.LIGHTYELLOW_EX + f"可能被风控，请稍后再试！")
 
 taskQueue.start()
-
