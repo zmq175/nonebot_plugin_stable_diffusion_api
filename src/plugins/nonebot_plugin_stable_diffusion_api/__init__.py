@@ -23,6 +23,8 @@ config = Config.parse_obj(global_config)
 
 loop = get_event_loop()
 taskQueue = Queue(loop=loop)
+scheduler = AsyncIOScheduler()
+scheduler._asyncio_loop = loop
 user_task_dict = {}
 
 drawer = on_command("AI画图", priority=5)
@@ -127,8 +129,6 @@ async def drawer_task(event: GroupMessageEvent, bot: Bot, regex: dict = RegexDic
 
 @scheduler.scheduled_job("cron", second="*/1", id="draw job")
 async def handle_queue():
-    scheduler = AsyncIOScheduler()
-    scheduler._asyncio_loop = loop
     while True:
         # 从队列中取出任务
         logger.info("尝试获取任务")
