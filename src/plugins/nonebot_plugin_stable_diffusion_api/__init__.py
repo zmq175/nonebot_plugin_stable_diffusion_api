@@ -30,6 +30,7 @@ except AttributeError:
 
 @drawer.handle()
 async def drawer_handle(event: GroupMessageEvent, bot: Bot, regex: dict = RegexDict()):
+    logger.info("start handle drawer")
     id_ = event.get_user_id()
 
     # 检查当前用户是否已有未完成任务
@@ -133,5 +134,4 @@ async def handle_queue():
 loop.create_task(handle_queue())
 logger.info("尝试运行loop")
 
-loop.run_forever()
 
