@@ -33,7 +33,9 @@ except AttributeError:
     post_url = ""
     logger.warning("could not fetch stable diffusion url, check your config")
 
-loop = get_running_loop()
+
+loop = scheduler._asyncio_loop
+
 
 
 @drawer.handle()
