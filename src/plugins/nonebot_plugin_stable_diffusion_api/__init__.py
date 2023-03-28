@@ -12,6 +12,11 @@ from nonebot.plugin.on import on_command
 from .config import Config
 from .worker import get_data
 
+from nonebot import require
+require("nonebot_plugin_apscheduler")
+
+from nonebot_plugin_apscheduler import scheduler
+
 global_config = nonebot.get_driver().config
 config = Config.parse_obj(global_config)
 
@@ -116,12 +121,11 @@ async def drawer_task(event: GroupMessageEvent, bot: Bot, regex: dict = RegexDic
         logger.warning(Fore.LIGHTYELLOW_EX + f"可能被风控，请稍后再试！")
 
 
-loop = get_event_loop()
-
-
+@scheduler.scheduled_job("cron", hour="* * * * * ? *", id="draw job")
 async def handle_queue():
     while True:
         # 从队列中取出任务
+        logger.info("尝试获取任务")
         task = await queue.get()
         logger.info(f"运行任务")
         # 运行任务
@@ -132,7 +136,3 @@ async def handle_queue():
         # 通知下一个任务可以开始了
         queue.task_done()
 
-
-loop.create_task(handle_queue())
-logger.info("尝试运行loop")
-loop.run_forever()
