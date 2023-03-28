@@ -47,6 +47,7 @@ async def drawer_handle(event: GroupMessageEvent, bot: Bot, regex: dict = RegexD
 
 async def drawer_task(event: GroupMessageEvent, bot: Bot, regex: dict = RegexDict()):
     id_ = event.get_user_id()
+    logger.info(f"start task for id {id_}")
 
     seed = regex["seed"]
     scale = regex["scale"]
