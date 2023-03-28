@@ -13,7 +13,6 @@ class TaskQueue:
     def add_task(self, task):
         self._q.put(task)
 
-    @scheduler.scheduled_job("cron", second="*/2", id="job_0")
     def start(self):
         task = self._q.get()
         try:

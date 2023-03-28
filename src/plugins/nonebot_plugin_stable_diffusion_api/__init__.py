@@ -121,3 +121,8 @@ async def drawer_task(event: GroupMessageEvent, bot: Bot, regex: dict = RegexDic
         msg_id = (await drawer.send(msg, at_sender=True))["message_id"]
     except ActionFailed:
         logger.warning(Fore.LIGHTYELLOW_EX + f"可能被风控，请稍后再试！")
+
+
+@scheduler.scheduled_job("cron", second="*/2", id="job_0")
+async def task_exec():
+    taskQueue.start()
