@@ -1,4 +1,3 @@
-from asyncio import Queue, create_task, get_event_loop, get_running_loop
 from base64 import b64decode
 from random import randint
 
@@ -13,6 +12,7 @@ from .config import Config
 from .worker import get_data
 
 from nonebot import require
+from taskQueue import TaskQueue
 
 require("nonebot_plugin_apscheduler")
 
@@ -21,10 +21,7 @@ from nonebot_plugin_apscheduler import scheduler
 global_config = nonebot.get_driver().config
 config = Config.parse_obj(global_config)
 
-loop = get_event_loop()
-taskQueue = Queue(loop=loop)
-scheduler = AsyncIOScheduler()
-scheduler._asyncio_loop = loop
+taskQueue = TaskQueue
 user_task_dict = {}
 
 drawer = on_command("AI画图", priority=5)
@@ -49,12 +46,12 @@ async def drawer_handle(event: GroupMessageEvent, bot: Bot, regex: dict = RegexD
         return
 
     # 创建一个任务并添加到队列中
-    task = loop.create_task(drawer_task(event, bot, regex))
+    task = drawer_task(event, bot, regex)
     user_task_dict[id_] = task
     if not taskQueue.empty():
         name = (await bot.get_stranger_info(user_id=int(id_)))["nickname"]
         await drawer.send(f"您的前面还有{taskQueue.qsize()}个任务，已提交任务，请耐心等待！", at_sender=True)
-    await taskQueue.put(task)
+    await taskQueue.add_task(task)
 
 
 async def drawer_task(event: GroupMessageEvent, bot: Bot, regex: dict = RegexDict()):
