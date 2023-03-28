@@ -3,6 +3,7 @@ from base64 import b64decode
 from random import randint
 
 import nonebot
+from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from colorama import Fore
 from nonebot import logger
 from nonebot.adapters.onebot.v12 import GroupMessageEvent, Bot, MessageSegment, ActionFailed
@@ -124,8 +125,10 @@ async def drawer_task(event: GroupMessageEvent, bot: Bot, regex: dict = RegexDic
         logger.warning(Fore.LIGHTYELLOW_EX + f"可能被风控，请稍后再试！")
 
 
-@scheduler.scheduled_job("cron", second="*/1", id="draw job", loop=loop)
+@scheduler.scheduled_job("cron", second="*/1", id="draw job")
 async def handle_queue():
+    scheduler = AsyncIOScheduler()
+    scheduler._asyncio_loop = loop
     while True:
         # 从队列中取出任务
         logger.info("尝试获取任务")
@@ -135,3 +138,4 @@ async def handle_queue():
         await task
         # 通知下一个任务可以开始了
         taskQueue.task_done()
+
