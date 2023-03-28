@@ -2,7 +2,6 @@ from base64 import b64decode
 from random import randint
 
 import nonebot
-from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from colorama import Fore
 from nonebot import logger
 from nonebot.adapters.onebot.v12 import GroupMessageEvent, Bot, MessageSegment, ActionFailed
@@ -122,5 +121,3 @@ async def drawer_task(event: GroupMessageEvent, bot: Bot, regex: dict = RegexDic
         msg_id = (await drawer.send(msg, at_sender=True))["message_id"]
     except ActionFailed:
         logger.warning(Fore.LIGHTYELLOW_EX + f"可能被风控，请稍后再试！")
-
-taskQueue.start()
