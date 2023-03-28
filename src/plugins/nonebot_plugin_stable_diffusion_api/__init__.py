@@ -36,17 +36,6 @@ except AttributeError:
 
 
 @drawer.handle()
-async def drawer_handle(event: GroupMessageEvent, bot: Bot, regex: dict = RegexDict()):
-    logger.info("start handle drawer")
-    id_ = event.get_user_id()
-
-    # 检查当前用户是否已有未完成任务
-    if id_ in user_task_dict:
-        drawer.finish("你有任务正在排队，请耐心等待！", at_sender=True)
-        return
-    await drawer_task(event, bot, regex)
-
-
 async def drawer_task(event: GroupMessageEvent, bot: Bot, regex: dict = RegexDict()):
     id_ = event.get_user_id()
     logger.info(f"start task for id {id_}")
@@ -115,4 +104,3 @@ async def drawer_task(event: GroupMessageEvent, bot: Bot, regex: dict = RegexDic
         msg_id = (await drawer.send(msg, at_sender=True))["message_id"]
     except ActionFailed:
         logger.warning(Fore.LIGHTYELLOW_EX + f"可能被风控，请稍后再试！")
-
