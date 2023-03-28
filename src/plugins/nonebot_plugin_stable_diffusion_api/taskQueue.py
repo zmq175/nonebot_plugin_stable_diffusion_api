@@ -1,5 +1,5 @@
 import queue
-from nonebot import require
+from nonebot import require, logger
 
 require("nonebot_plugin_apscheduler")
 
@@ -16,6 +16,7 @@ class TaskQueue:
     def start(self):
         task = self._q.get()
         try:
+            logger.info("run task")
             task.run()
         except Exception as e:
             print(f"Error running task: {e}")

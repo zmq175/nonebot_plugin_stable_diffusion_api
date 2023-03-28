@@ -124,7 +124,7 @@ async def drawer_task(event: GroupMessageEvent, bot: Bot, regex: dict = RegexDic
         logger.warning(Fore.LIGHTYELLOW_EX + f"可能被风控，请稍后再试！")
 
 
-async def task_exec():
+def task_exec():
     while True:
         taskQueue.start()
 
