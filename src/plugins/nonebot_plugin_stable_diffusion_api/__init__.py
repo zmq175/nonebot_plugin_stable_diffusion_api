@@ -89,7 +89,7 @@ async def drawer_task(event: GroupMessageEvent, bot: Bot, regex: dict = RegexDic
     )
 
     data = await get_data(
-        post_url=post_url,
+        post_url=post_url + "sdapi/v1/txt2img",
         size=size,
         prompt=prompt,
         timeout=10*60*1000,
