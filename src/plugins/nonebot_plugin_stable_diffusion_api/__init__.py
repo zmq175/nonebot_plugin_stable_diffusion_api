@@ -20,7 +20,7 @@ from nonebot_plugin_apscheduler import scheduler
 global_config = nonebot.get_driver().config
 config = Config.parse_obj(global_config)
 
-queue = Queue()
+taskQueue = Queue()
 user_task_dict = {}
 
 drawer = on_command("AI画图", priority=5)
@@ -47,10 +47,10 @@ async def drawer_handle(event: GroupMessageEvent, bot: Bot, regex: dict = RegexD
     # 创建一个任务并添加到队列中
     task = create_task(drawer_task(event, bot, regex))
     user_task_dict[id_] = task
-    if not queue.empty():
+    if not taskQueue.empty():
         name = (await bot.get_stranger_info(user_id=int(id_)))["nickname"]
-        await drawer.send(f"您的前面还有{queue.qsize()}个任务，已提交任务，请耐心等待！", at_sender=True)
-    await queue.put(task)
+        await drawer.send(f"您的前面还有{taskQueue.qsize()}个任务，已提交任务，请耐心等待！", at_sender=True)
+    await taskQueue.put(task)
 
 
 async def drawer_task(event: GroupMessageEvent, bot: Bot, regex: dict = RegexDict()):
@@ -126,7 +126,7 @@ async def handle_queue():
     while True:
         # 从队列中取出任务
         logger.info("尝试获取任务")
-        task = await queue.get()
+        task = await taskQueue.get()
         logger.info(f"运行任务")
         # 运行任务
         await task
@@ -134,5 +134,5 @@ async def handle_queue():
         id_ = task._coro.cr_frame.f_locals['event'].get_user_id()
         del user_task_dict[id_]
         # 通知下一个任务可以开始了
-        queue.task_done()
+        taskQueue.task_done()
 
