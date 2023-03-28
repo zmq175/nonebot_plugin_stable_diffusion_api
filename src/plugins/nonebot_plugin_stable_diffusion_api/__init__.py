@@ -44,14 +44,7 @@ async def drawer_handle(event: GroupMessageEvent, bot: Bot, regex: dict = RegexD
     if id_ in user_task_dict:
         drawer.finish("你有任务正在排队，请耐心等待！", at_sender=True)
         return
-
-    # 创建一个任务并添加到队列中
-    task = drawer_task(event, bot, regex)
-    user_task_dict[id_] = task
-    if not taskQueue.empty():
-        name = (await bot.get_stranger_info(user_id=int(id_)))["nickname"]
-        await drawer.send(f"您的前面还有{taskQueue.qsize()}个任务，已提交任务，请耐心等待！", at_sender=True)
-    await taskQueue.add_task(task)
+    await drawer_task(event, bot, regex)
 
 
 async def drawer_task(event: GroupMessageEvent, bot: Bot, regex: dict = RegexDict()):
@@ -123,11 +116,3 @@ async def drawer_task(event: GroupMessageEvent, bot: Bot, regex: dict = RegexDic
     except ActionFailed:
         logger.warning(Fore.LIGHTYELLOW_EX + f"可能被风控，请稍后再试！")
 
-
-def task_exec():
-    while True:
-        taskQueue.start()
-
-
-thread = threading.Thread(target=task_exec)
-thread.start()
