@@ -1,4 +1,4 @@
-from asyncio import Queue, create_task, get_event_loop
+from asyncio import Queue, create_task, get_event_loop, get_running_loop
 from base64 import b64decode
 from random import randint
 
@@ -33,7 +33,7 @@ except AttributeError:
     post_url = ""
     logger.warning("could not fetch stable diffusion url, check your config")
 
-loop = get_event_loop()
+loop = get_running_loop()
 
 
 @drawer.handle()
