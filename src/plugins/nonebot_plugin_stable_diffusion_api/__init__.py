@@ -123,16 +123,5 @@ async def drawer_task(event: GroupMessageEvent, bot: Bot, regex: dict = RegexDic
     except ActionFailed:
         logger.warning(Fore.LIGHTYELLOW_EX + f"可能被风控，请稍后再试！")
 
-
-@scheduler.scheduled_job("cron", second="*/1", id="draw job")
-async def handle_queue():
-    while True:
-        # 从队列中取出任务
-        logger.info("尝试获取任务")
-        task = await taskQueue.get()
-        logger.info(f"运行任务")
-        # 运行任务
-        await task
-        # 通知下一个任务可以开始了
-        taskQueue.task_done()
+taskQueue.start()
 
