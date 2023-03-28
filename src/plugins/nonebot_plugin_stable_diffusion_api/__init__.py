@@ -28,22 +28,6 @@ except AttributeError:
     post_url = ""
     logger.warning("could not fetch stable diffusion url, check your config")
 
-loop = get_event_loop()
-async def handle_queue():
-    while True:
-        # 从队列中取出任务
-        task = await queue.get()
-        logger.info(f"运行任务")
-        # 运行任务
-        await task
-        # 任务运行完成后，将其从user_task_dict中删除
-        id_ = task._coro.cr_frame.f_locals['event'].get_user_id()
-        del user_task_dict[id_]
-        # 通知下一个任务可以开始了
-        queue.task_done()
-
-loop.create_task(handle_queue())
-
 @drawer.handle()
 async def drawer_handle(event: GroupMessageEvent, bot: Bot, regex: dict = RegexDict()):
     id_ = event.get_user_id()
@@ -128,6 +112,26 @@ async def drawer_task(event: GroupMessageEvent, bot: Bot, regex: dict = RegexDic
         msg_id = (await drawer.send(msg, at_sender=True))["message_id"]
     except ActionFailed:
         logger.warning(Fore.LIGHTYELLOW_EX + f"可能被风控，请稍后再试！")
+
+
+loop = get_event_loop()
+
+
+async def handle_queue():
+    while True:
+        # 从队列中取出任务
+        task = await queue.get()
+        logger.info(f"运行任务")
+        # 运行任务
+        await task
+        # 任务运行完成后，将其从user_task_dict中删除
+        id_ = task._coro.cr_frame.f_locals['event'].get_user_id()
+        del user_task_dict[id_]
+        # 通知下一个任务可以开始了
+        queue.task_done()
+
+loop.create_task(handle_queue())
+logger.info("尝试运行loop")
 
 loop.run_forever()
 
