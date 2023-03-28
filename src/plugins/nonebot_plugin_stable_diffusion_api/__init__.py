@@ -1,3 +1,4 @@
+import threading
 from base64 import b64decode
 from random import randint
 
@@ -123,6 +124,10 @@ async def drawer_task(event: GroupMessageEvent, bot: Bot, regex: dict = RegexDic
         logger.warning(Fore.LIGHTYELLOW_EX + f"可能被风控，请稍后再试！")
 
 
-@scheduler.scheduled_job("cron", second="*/2", id="job_0")
 async def task_exec():
-    taskQueue.start()
+    while True:
+        taskQueue.start()
+
+
+thread = threading.Thread(target=task_exec)
+thread.start()
