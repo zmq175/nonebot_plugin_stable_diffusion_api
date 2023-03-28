@@ -7,12 +7,12 @@ from colorama import Fore
 from nonebot import logger
 from nonebot.adapters.onebot.v12 import GroupMessageEvent, Bot, MessageSegment, ActionFailed
 from nonebot.params import CommandArg, RegexDict
-from nonebot.plugin.on import on_command\
-
+from nonebot.plugin.on import on_command
 from .config import Config
 from .worker import get_data
 
 from nonebot import require
+
 require("nonebot_plugin_apscheduler")
 
 from nonebot_plugin_apscheduler import scheduler
@@ -20,7 +20,8 @@ from nonebot_plugin_apscheduler import scheduler
 global_config = nonebot.get_driver().config
 config = Config.parse_obj(global_config)
 
-taskQueue = Queue()
+loop = get_event_loop()
+taskQueue = Queue(loop=loop)
 user_task_dict = {}
 
 drawer = on_command("AI画图", priority=5)
@@ -32,10 +33,6 @@ try:
 except AttributeError:
     post_url = ""
     logger.warning("could not fetch stable diffusion url, check your config")
-
-
-loop = scheduler._asyncio_loop
-
 
 
 @drawer.handle()
@@ -138,4 +135,3 @@ async def handle_queue():
         await task
         # 通知下一个任务可以开始了
         taskQueue.task_done()
-
