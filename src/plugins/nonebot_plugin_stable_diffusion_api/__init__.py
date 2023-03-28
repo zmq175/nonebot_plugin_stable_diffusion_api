@@ -57,6 +57,8 @@ async def drawer_task(event: GroupMessageEvent, bot: Bot, regex: dict = RegexDic
     id_ = event.get_user_id()
     logger.info(f"start task for id {id_}")
 
+    del user_task_dict[id_]
+
     seed = regex["seed"]
     scale = regex["scale"]
     steps = regex["steps"]
@@ -130,9 +132,6 @@ async def handle_queue():
         logger.info(f"运行任务")
         # 运行任务
         await task
-        # 任务运行完成后，将其从user_task_dict中删除
-        id_ = task._coro.cr_frame.f_locals['event'].get_user_id()
-        del user_task_dict[id_]
         # 通知下一个任务可以开始了
         taskQueue.task_done()
 
