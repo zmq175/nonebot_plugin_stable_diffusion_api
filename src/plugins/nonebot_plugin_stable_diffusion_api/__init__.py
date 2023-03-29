@@ -29,12 +29,12 @@ taskQueue = TaskQueue()
 user_task_dict = {}
 
 command_parser = ArgumentParser()
-command_parser.add_argument("seed", default=-1, required=False)
-command_parser.add_argument("scale", default=-1, required=False)
-command_parser.add_argument("steps", default=-1, required=False)
-command_parser.add_argument("size", default="", required=False)
-command_parser.add_argument("prompt", default="", required=False)
-command_parser.add_argument("negative", default="", required=False)
+command_parser.add_argument("--seed", default=-1, required=False)
+command_parser.add_argument("--scale", default=-1, required=False)
+command_parser.add_argument("--steps", default=-1, required=False)
+command_parser.add_argument("--size", default="", required=False)
+command_parser.add_argument("--prompt", default="", required=False)
+command_parser.add_argument("--negative", default="", required=False)
 
 drawer = on_shell_command("AI画图", aliases={"Ai画图", "生成色图", "ai画图"}, parser=command_parser)
 logger.info("ai画图启动")
