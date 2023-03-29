@@ -60,8 +60,6 @@ async def drawer_task(event: MessageEvent, bot: Bot, args: Namespace = ShellComm
     id_ = event.get_user_id()
     logger.info(f"start task for id {id_}")
 
-    del user_task_dict[id_]
-
     seed = args.seed
     scale = args.scale
     steps = args.steps
