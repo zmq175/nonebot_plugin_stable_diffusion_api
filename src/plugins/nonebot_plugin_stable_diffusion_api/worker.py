@@ -78,14 +78,14 @@ async def get_data(post_url, config, prompt, timeout,
     data = {
         "width": size[0],
         "height": size[1],
-        "n_samples": 1,
+        "batch_size": 1,
         "prompt": prompt,
-        "sampler": "k_euler_ancestral",
-        "scale": scale,
+        "sampler": "DPM++ 2M Karras",
+        "cfg-scale": scale,
         "seed": seed,
         "steps": steps,
-        "uc": uc,
-        "ucPreset": 0,
+        "negative_prompt": uc,
+        "restore_faces": True
     }
 
     headers = {
@@ -110,5 +110,5 @@ async def get_data(post_url, config, prompt, timeout,
             return False, info
 
         # 获取返回的图片base64
-        base64_img = findall(r'data:(?P<base64>.*)', info)[0]
+        base64_img = data.get("images")[0]
         return True, base64_img
