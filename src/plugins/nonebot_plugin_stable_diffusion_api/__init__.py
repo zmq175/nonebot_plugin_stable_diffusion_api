@@ -85,9 +85,11 @@ async def drawer_task(event: MessageEvent, bot: Bot, args: Namespace = ShellComm
     size = [int(size[0]), int(size[1])]
     if size[0] > 1024 or size[1] > 1024:
         drawer.finish("图片尺寸过大，请重新输入！", at_sender=True)
+        return
 
     if prompt is None or prompt == "":
         drawer.finish("当前不支持无参数输入，请补充prompts", at_sender=True)
+        return
 
     # 获取用户名
     name = (await bot.get_stranger_info(user_id=int(id_)))["nickname"]

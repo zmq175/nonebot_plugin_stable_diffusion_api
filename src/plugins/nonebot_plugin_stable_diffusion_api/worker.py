@@ -93,7 +93,7 @@ async def get_data(post_url, config, prompt, timeout,
     }
 
     if config.stable_auth is not None:
-        headers["Authorization"] = Config.stable_auth
+        headers["Authorization"] = config.stable_auth
         logger.info("使用鉴权设置")
 
     async with AsyncClient(headers=headers, timeout=timeout) as client:
