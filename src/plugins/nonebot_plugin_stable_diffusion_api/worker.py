@@ -105,7 +105,7 @@ async def get_data(post_url, config, prompt, timeout,
         info = resp.text
 
         # 获取错误
-        if "data:" not in info:
+        if "images" not in info:
             return False, info
 
         # 获取返回的图片base64
