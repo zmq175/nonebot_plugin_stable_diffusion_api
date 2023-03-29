@@ -71,7 +71,7 @@ def set_size(image):
     return width, height
 
 
-async def get_data(post_url, prompt, timeout,
+async def get_data(post_url, config, prompt, timeout,
                    img=None, mode=None, strength=None,
                    noise=None, size=None, uc=None,
                    scale=None, steps=None, seed=None):
@@ -92,7 +92,7 @@ async def get_data(post_url, prompt, timeout,
         "User-Agent": UserAgent().random
     }
 
-    if Config.stable_auth is not None:
+    if config.stable_auth is not None:
         headers["Authorization"] = Config.stable_auth
         logger.info("使用鉴权设置")
 

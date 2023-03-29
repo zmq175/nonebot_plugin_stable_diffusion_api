@@ -111,7 +111,8 @@ async def drawer_task(event: MessageEvent, bot: Bot, args: Namespace = ShellComm
         timeout=10 * 60 * 1000,
         uc=uc, steps=steps,
         scale=scale,
-        seed=seed
+        seed=seed,
+        config=config
     )
 
     if data[0] is False:
