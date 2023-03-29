@@ -7,7 +7,7 @@ from colorama import Fore
 from nonebot import logger
 from nonebot.adapters.onebot.v12 import MessageEvent, Bot, MessageSegment, ActionFailed
 from nonebot.params import CommandArg, RegexDict
-from nonebot.plugin.on import on_command
+from nonebot.plugin.on import on_command, on_regex
 from .config import Config
 from .worker import get_data
 
@@ -24,7 +24,7 @@ config = Config.parse_obj(global_config)
 taskQueue = TaskQueue()
 user_task_dict = {}
 
-drawer = on_command("AI画图", priority=5)
+drawer = on_regex("AI画图", priority=5)
 logger.info("ai画图启动")
 
 try:
