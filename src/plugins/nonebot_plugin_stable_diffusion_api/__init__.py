@@ -36,7 +36,7 @@ command_parser.add_argument("size")
 command_parser.add_argument("prompt")
 command_parser.add_argument("negative")
 
-drawer = on_shell_command("AI画图", priority=5, aliases={"Ai画图", "生成色图", "ai画图"}, parser=command_parser)
+drawer = on_shell_command("AI画图", aliases={"Ai画图", "生成色图", "ai画图"}, parser=command_parser)
 logger.info("ai画图启动")
 
 try:
@@ -46,6 +46,11 @@ except AttributeError:
     post_url = ""
     logger.warning("could not fetch stable diffusion url, check your config")
 
+
+@drawer.handle()
+async def _(args: ParserExit = ShellCommandArgs()):
+    logger.warning("wrong args")
+    await drawer.finish(args.message)
 
 @drawer.handle()
 async def drawer_task(event: MessageEvent, bot: Bot, args: Namespace = ShellCommandArgs()):
