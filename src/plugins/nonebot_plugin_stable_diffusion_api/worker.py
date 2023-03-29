@@ -84,8 +84,7 @@ async def get_data(post_url, config, prompt, timeout,
         "cfg-scale": scale,
         "seed": seed,
         "steps": steps,
-        "negative_prompt": uc,
-        "restore_faces": True
+        "negative_prompt": uc
     }
 
     headers = {
