@@ -29,12 +29,12 @@ taskQueue = TaskQueue()
 user_task_dict = {}
 
 command_parser = ArgumentParser()
-command_parser.add_argument("seed")
-command_parser.add_argument("scale")
-command_parser.add_argument("steps")
-command_parser.add_argument("size")
-command_parser.add_argument("prompt")
-command_parser.add_argument("negative")
+command_parser.add_argument("seed", default=-1)
+command_parser.add_argument("scale", default=-1)
+command_parser.add_argument("steps", default=-1)
+command_parser.add_argument("size", default="")
+command_parser.add_argument("prompt", default="")
+command_parser.add_argument("negative", default="")
 
 drawer = on_shell_command("AI画图", aliases={"Ai画图", "生成色图", "ai画图"}, parser=command_parser)
 logger.info("ai画图启动")
@@ -65,16 +65,16 @@ async def drawer_task(event: MessageEvent, bot: Bot, args: Namespace = ShellComm
     size = args.size
     prompt = args.prompt
     uc = "lowres, bad anatomy, bad hands, text, error, missing fingers, extra digit, fewer digits, cropped, worst quality, low quality, normal quality, jpeg artifacts, signature, watermark, username, blurry"
-    if args.negative:
+    if not args.negative == "":
         uc = args.negative
 
-    if seed is None:
+    if seed is None or seed == -1:
         seed = randint(0, pow(2, 32))
-    if scale is None:
+    if scale is None or scale == -1:
         scale = 12
-    if steps is None:
+    if steps is None or steps == -1:
         steps = 28
-    if size is None:
+    if size is None or size == "":
         size = "512x768"
 
     try:
@@ -85,7 +85,7 @@ async def drawer_task(event: MessageEvent, bot: Bot, args: Namespace = ShellComm
     if size[0] > 1024 or size[1] > 1024:
         drawer.finish("图片尺寸过大，请重新输入！", at_sender=True)
 
-    if prompt is None:
+    if prompt is None or prompt == "":
         drawer.finish("当前不支持无参数输入，请补充prompts", at_sender=True)
 
     # 获取用户名
