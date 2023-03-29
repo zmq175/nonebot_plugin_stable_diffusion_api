@@ -1,3 +1,4 @@
+import json
 from io import BytesIO
 from re import findall
 
@@ -109,5 +110,5 @@ async def get_data(post_url, config, prompt, timeout,
             return False, info
 
         # 获取返回的图片base64
-        base64_img = data.get("images")[0]
+        base64_img = json.loads(info)['images'][0]
         return True, base64_img
