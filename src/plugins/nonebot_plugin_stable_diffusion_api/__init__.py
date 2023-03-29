@@ -1,4 +1,5 @@
 import threading
+from argparse import ArgumentParser, Namespace
 from base64 import b64decode
 from random import randint
 
@@ -6,8 +7,9 @@ import nonebot
 from colorama import Fore
 from nonebot import logger
 from nonebot.adapters.onebot.v12 import MessageEvent, Bot, MessageSegment, ActionFailed
-from nonebot.params import CommandArg, RegexDict
-from nonebot.plugin.on import on_command, on_regex
+from nonebot.exception import ParserExit
+from nonebot.params import CommandArg, RegexDict, ShellCommandArgs
+from nonebot.plugin.on import on_command, on_regex, on_shell_command
 from .config import Config
 from .worker import get_data
 
@@ -24,7 +26,15 @@ config = Config.parse_obj(global_config)
 taskQueue = TaskQueue()
 user_task_dict = {}
 
-drawer = on_regex("AI画图", priority=5)
+command_parser = ArgumentParser()
+command_parser.add_argument("seed")
+command_parser.add_argument("scale")
+command_parser.add_argument("steps")
+command_parser.add_argument("size")
+command_parser.add_argument("prompt")
+command_parser.add_argument("negative")
+
+drawer = on_shell_command("AI画图", priority=5, aliases={"Ai画图", "生成色图", "ai画图"}, parser=command_parser)
 logger.info("ai画图启动")
 
 try:
@@ -36,18 +46,20 @@ except AttributeError:
 
 
 @drawer.handle()
-async def drawer_task(event: MessageEvent, bot: Bot, regex: dict = RegexDict()):
+async def drawer_task(event: MessageEvent, bot: Bot, args: Namespace = ShellCommandArgs()):
     id_ = event.get_user_id()
     logger.info(f"start task for id {id_}")
 
     del user_task_dict[id_]
 
-    seed = regex["seed"]
-    scale = regex["scale"]
-    steps = regex["steps"]
-    size = regex["size"]
-    prompt = regex["prompt"]
+    seed = args.seed
+    scale = args.scale
+    steps = args.steps
+    size = args.size
+    prompt = args.prompt
     uc = "lowres, bad anatomy, bad hands, text, error, missing fingers, extra digit, fewer digits, cropped, worst quality, low quality, normal quality, jpeg artifacts, signature, watermark, username, blurry"
+    if args.negative:
+        uc = args.negative
 
     if seed is None:
         seed = randint(0, pow(2, 32))
