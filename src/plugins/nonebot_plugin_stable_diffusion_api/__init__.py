@@ -53,7 +53,7 @@ async def _(args: ParserExit = ShellCommandArgs()):
     await drawer.finish(args.message)
 
 @drawer.handle()
-async def drawer_task(event: MessageEvent, bot: Bot, args: ShellCommandArgs()):
+async def drawer_task(event: MessageEvent, bot: Bot, args: Namespace = ShellCommandArgs()):
     id_ = event.get_user_id()
     logger.info(f"start task for id {id_}")
 
