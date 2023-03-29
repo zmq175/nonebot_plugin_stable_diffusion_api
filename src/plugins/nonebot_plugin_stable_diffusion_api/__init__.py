@@ -5,7 +5,7 @@ from random import randint
 import nonebot
 from colorama import Fore
 from nonebot import logger
-from nonebot.adapters.onebot.v12 import GroupMessageEvent, Bot, MessageSegment, ActionFailed
+from nonebot.adapters.onebot.v12 import MessageEvent, Bot, MessageSegment, ActionFailed
 from nonebot.params import CommandArg, RegexDict
 from nonebot.plugin.on import on_command
 from .config import Config
@@ -36,7 +36,7 @@ except AttributeError:
 
 
 @drawer.handle()
-async def drawer_task(event: GroupMessageEvent, bot: Bot, regex: dict = RegexDict()):
+async def drawer_task(event: MessageEvent, bot: Bot, regex: dict = RegexDict()):
     id_ = event.get_user_id()
     logger.info(f"start task for id {id_}")
 
