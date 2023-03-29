@@ -6,7 +6,7 @@ from random import randint
 import nonebot
 from colorama import Fore
 from nonebot import logger
-from nonebot.adapters.onebot.v12 import MessageEvent, Bot, MessageSegment, ActionFailed
+from nonebot.adapters.onebot.v11 import MessageEvent, Bot, MessageSegment, ActionFailed
 from nonebot.exception import ParserExit
 from nonebot.params import CommandArg, RegexDict, ShellCommandArgs
 from nonebot.plugin.on import on_command, on_regex, on_shell_command
@@ -52,11 +52,6 @@ async def _(args: ParserExit = ShellCommandArgs()):
     logger.warning(f"wrong args: {args}")
     await drawer.finish(args.message)
 
-
-
-@drawer.handle()
-async def correct_resp(args: Namespace = ShellCommandArgs()):
-    logger.info(f"start task, {args}")
 
 
 @drawer.handle()
