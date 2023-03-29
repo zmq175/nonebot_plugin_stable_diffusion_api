@@ -1,5 +1,5 @@
 import threading
-from argparse import ArgumentParser, Namespace
+from argparse import Namespace
 from base64 import b64decode
 from random import randint
 
@@ -10,6 +10,8 @@ from nonebot.adapters.onebot.v12 import MessageEvent, Bot, MessageSegment, Actio
 from nonebot.exception import ParserExit
 from nonebot.params import CommandArg, RegexDict, ShellCommandArgs
 from nonebot.plugin.on import on_command, on_regex, on_shell_command
+from nonebot.rule import ArgumentParser
+
 from .config import Config
 from .worker import get_data
 
