@@ -36,6 +36,7 @@ command_parser.add_argument("--size", default="", required=False)
 command_parser.add_argument("--prompt", default="", required=False)
 command_parser.add_argument("--negative", default="", required=False)
 command_parser.add_argument("--sampler", default="", required=False)
+command_parser.add_argument("--hires", action="store_true")
 
 drawer = on_shell_command("AI画图", aliases={"Ai画图", "生成色图", "ai画图"}, parser=command_parser)
 logger.info("ai画图启动")
@@ -138,7 +139,8 @@ async def drawer_task(event: MessageEvent, bot: Bot, args: Namespace = ShellComm
         scale=scale,
         seed=seed,
         sampler=sampler,
-        config=config
+        config=config,
+        hires=args.hires
     )
 
     if data[0] is False:

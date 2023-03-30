@@ -75,7 +75,7 @@ def set_size(image):
 async def get_data(post_url, config, prompt, timeout,
                    img=None, mode=None, strength=None,
                    noise=None, size=None, uc=None,
-                   scale=None, steps=None, seed=None, sampler=None):
+                   scale=None, steps=None, seed=None, sampler=None, hires=None):
     data = {
         "width": size[0],
         "height": size[1],
@@ -85,7 +85,8 @@ async def get_data(post_url, config, prompt, timeout,
         "cfg-scale": scale,
         "seed": seed,
         "steps": steps,
-        "negative_prompt": uc
+        "negative_prompt": uc,
+        "enable_hr": hires
     }
 
     headers = {
