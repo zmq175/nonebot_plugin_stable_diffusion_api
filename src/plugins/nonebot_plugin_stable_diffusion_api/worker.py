@@ -75,13 +75,13 @@ def set_size(image):
 async def get_data(post_url, config, prompt, timeout,
                    img=None, mode=None, strength=None,
                    noise=None, size=None, uc=None,
-                   scale=None, steps=None, seed=None):
+                   scale=None, steps=None, seed=None, sampler=None):
     data = {
         "width": size[0],
         "height": size[1],
         "batch_size": 1,
         "prompt": prompt,
-        "sampler": "DPM++ 2M Karras",
+        "sampler_name": sampler,
         "cfg-scale": scale,
         "seed": seed,
         "steps": steps,
@@ -98,6 +98,7 @@ async def get_data(post_url, config, prompt, timeout,
 
     async with AsyncClient(headers=headers, timeout=timeout) as client:
         try:
+            logger.info(f"request api: {post_url}, payload:{data}")
             resp = await client.post(url=post_url, json=data)
         except ConnectTimeout:
             return False, "时间超过限制！"

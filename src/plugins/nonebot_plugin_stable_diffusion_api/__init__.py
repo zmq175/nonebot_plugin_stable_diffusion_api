@@ -35,6 +35,7 @@ command_parser.add_argument("--steps", default=-1, required=False)
 command_parser.add_argument("--size", default="", required=False)
 command_parser.add_argument("--prompt", default="", required=False)
 command_parser.add_argument("--negative", default="", required=False)
+command_parser.add_argument("--sampler", default="", required=False)
 
 drawer = on_shell_command("AI画图", aliases={"Ai画图", "生成色图", "ai画图"}, parser=command_parser)
 logger.info("ai画图启动")
@@ -50,7 +51,26 @@ except AttributeError:
 @drawer.handle()
 async def _(args: ParserExit = ShellCommandArgs()):
     logger.warning(f"wrong args: {args}")
-    await drawer.finish(args.message)
+    await drawer.finish(f"{args.message}, 目前支持的Lora模型列表如下：\n <lora:ArknightsChen5concept_10:1>"
+                        f" <lora:ArknightsNian_20:1> "
+                        f"<lora:AzumaSeren_v10:1> "
+                        f"<lora:Bremerton (Kung Fu Cruiser) "
+                        f"(Azur Lane):1>"
+                        f" <lora:GawrGuraFlatisJustice:1> "
+                        f"<lora:Lucy (Cyberpunk Edgerunners):1>"
+                        f" <lora:Raiden Shogun:1> "
+                        f"<lora:Rem_RE Zero:1> "
+                        f"<lora:Shengren:1> "
+                        f"<lora:YDLunaCos:1> "
+                        f"<lora:YaeMikoRealisticGenshin:1> "
+                        f"<lora:Yuefu:1> "
+                        f"<lora:Yuta:1> "
+                        f"<lora:aliceNikke_v30:1>"
+                        f" <lora:arknightsTexas20the.uDnD:1> <lora:banbanbai:1> <lora:corruption_v1:1> "
+                        f"<lora:godChineseGirl:1> <lora:hmsCheshireAzurLane_delta:1> <lora:iuV35.uv1P:1> "
+                        f"<lora:kanameMadoka_delta:1> <lora:minatoaqua_trSafe:1> <lora:necoStyleLora_v10:1> "
+                        f"<lora:punishingGreyRaven_v10:1> <lora:shutenDoujiFateGO_shuten:1> "
+                        f"<lora:stLouisLuxuriousWheels_v1:1> <lora:yaemikoTest.Yof9:1>")
 
 
 
@@ -66,6 +86,7 @@ async def drawer_task(event: MessageEvent, bot: Bot, args: Namespace = ShellComm
     size = args.size
     prompt = args.prompt
     uc = "lowres, bad anatomy, bad hands, text, error, missing fingers, extra digit, fewer digits, cropped, worst quality, low quality, normal quality, jpeg artifacts, signature, watermark, username, blurry"
+    sampler = args.sampler
     if not args.negative == "":
         uc = args.negative
 
@@ -77,13 +98,15 @@ async def drawer_task(event: MessageEvent, bot: Bot, args: Namespace = ShellComm
         steps = 28
     if size is None or size == "":
         size = "512x768"
+    if sampler is None or sampler == "":
+        sampler = "DPM++ 2M Karras"
 
     try:
         size = size.split("x")
     except AttributeError:
         size = [512, 512]
     size = [int(size[0]), int(size[1])]
-    if size[0] > 1024 or size[1] > 1024:
+    if size[0] > 2048 or size[1] > 2048:
         drawer.finish("图片尺寸过大，请重新输入！", at_sender=True)
         return
 
@@ -114,6 +137,7 @@ async def drawer_task(event: MessageEvent, bot: Bot, args: Namespace = ShellComm
         uc=uc, steps=steps,
         scale=scale,
         seed=seed,
+        sampler=sampler,
         config=config
     )
 
