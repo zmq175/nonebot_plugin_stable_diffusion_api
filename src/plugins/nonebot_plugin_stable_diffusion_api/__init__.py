@@ -1,3 +1,5 @@
+import json
+import random
 import threading
 from argparse import Namespace
 from base64 import b64decode
@@ -37,6 +39,11 @@ command_parser.add_argument("--prompt", default="", required=False)
 command_parser.add_argument("--negative", default="", required=False)
 command_parser.add_argument("--sampler", default="", required=False)
 command_parser.add_argument("--hires", action="store_true")
+
+with open("./tag_sets.json", "r") as f:
+    tag_sets_list = json.load(f)
+
+tag_sets = set(tag_sets_list)
 
 drawer = on_shell_command("AI画图", aliases={"Ai画图", "生成色图", "ai画图"}, parser=command_parser)
 logger.info("ai画图启动")
@@ -112,8 +119,10 @@ async def drawer_task(event: MessageEvent, bot: Bot, args: Namespace = ShellComm
         return
 
     if prompt is None or prompt == "":
-        drawer.finish("当前不支持无参数输入，请补充prompts", at_sender=True)
-        return
+        num_tags = random.randint(1, len(tag_sets))  # 生成一个1到len(tag_sets)之间的随机数，作为抽取的tag数量
+        selected_tags = random.sample(tag_sets, num_tags)  # 从tag_sets中随机抽取num_tags个tag
+        prompt = ", ".join(selected_tags)  # 将选中的tag拼接成英文逗号分隔的字符串
+        await drawer.send(f"因为您没有指定prompt, prompt随机指定为{prompt}", at_sender=True)
 
     # 获取用户名
     name = (await bot.get_stranger_info(user_id=int(id_)))["nickname"]
