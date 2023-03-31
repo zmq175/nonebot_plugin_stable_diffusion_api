@@ -40,7 +40,8 @@ command_parser.add_argument("--negative", default="", required=False)
 command_parser.add_argument("--sampler", default="", required=False)
 command_parser.add_argument("--hires", action="store_true")
 
-with open("tag_sets.json", "r") as f:
+with open("/home/ec2-user/nonoko/nonebot_plugin_stable_diffusion_api/src/plugins/nonebot_plugin_stable_diffusion_api"
+          "/tag_sets.json", "r") as f:
     tag_sets_list = json.load(f)
 
 tag_sets = set(tag_sets_list)
