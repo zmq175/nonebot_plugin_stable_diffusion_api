@@ -120,7 +120,8 @@ async def drawer_task(event: MessageEvent, bot: Bot, args: Namespace = ShellComm
         return
 
     if prompt is None or prompt == "":
-        num_tags = random.randint(1, len(tag_sets))  # 生成一个1到len(tag_sets)之间的随机数，作为抽取的tag数量
+        max_num_tags = min(len(tag_sets), 30)  # 设置允许的最大随机数为50，或者tag_sets的长度，以防止出现超出范围的随机数
+        num_tags = random.randint(1, max_num_tags)  # 生成一个1到max_num_tags之间的随机数，作为抽取的tag数量
         selected_tags = random.sample(tag_sets, num_tags)  # 从tag_sets中随机抽取num_tags个tag
         prompt = ", ".join(selected_tags)  # 将选中的tag拼接成英文逗号分隔的字符串
         await drawer.send(f"因为您没有指定prompt, prompt随机指定为{prompt}", at_sender=True)
