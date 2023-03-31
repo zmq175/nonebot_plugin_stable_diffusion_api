@@ -128,8 +128,7 @@ async def drawer_task(event: MessageEvent, bot: Bot, args: Namespace = ShellComm
         num_tags = random.randint(1, max_num_tags)  # 生成一个1到max_num_tags之间的随机数，作为抽取的tag数量
         selected_tags = random.sample(tag_sets, num_tags)  # 从tag_sets中随机抽取num_tags个tag
         prompt = ", ".join(selected_tags)  # 将选中的tag拼接成英文逗号分隔的字符串
-        max_lora = min(len(lora_list), 2)
-        num_loras = random.randint(0, max_lora)
+        num_loras = random.randint(0, 2)
         selected_lora = random.sample(lora_list, num_loras)
         final_lora = []
         for lora in lora_list:
