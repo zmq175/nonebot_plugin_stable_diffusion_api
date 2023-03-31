@@ -131,7 +131,7 @@ async def drawer_task(event: MessageEvent, bot: Bot, args: Namespace = ShellComm
         num_loras = random.randint(0, 2)
         selected_lora = random.sample(lora_list, num_loras)
         final_lora = []
-        for lora in lora_list:
+        for lora in selected_lora:
             final_lora.append(lora + str(round(random.uniform(0.1, 0.9), 1)) + ">")
         lora_str = ", ".join(final_lora)
         prompt = prompt + ", " + lora_str
