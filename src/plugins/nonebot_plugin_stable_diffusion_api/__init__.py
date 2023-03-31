@@ -44,6 +44,10 @@ with open("/home/ec2-user/nonoko/nonebot_plugin_stable_diffusion_api/src/plugins
           "/tags.json", "r") as f:
     tag_sets_list = json.load(f)
 
+with open("/home/ec2-user/nonoko/nonebot_plugin_stable_diffusion_api/src/plugins/nonebot_plugin_stable_diffusion_api"
+          "/lora.json", "r") as f:
+    lora_list = json.load(f)
+
 tag_sets = set(tag_sets_list)
 
 drawer = on_shell_command("AI画图", aliases={"Ai画图", "生成色图", "ai画图"}, parser=command_parser)
@@ -124,6 +128,14 @@ async def drawer_task(event: MessageEvent, bot: Bot, args: Namespace = ShellComm
         num_tags = random.randint(1, max_num_tags)  # 生成一个1到max_num_tags之间的随机数，作为抽取的tag数量
         selected_tags = random.sample(tag_sets, num_tags)  # 从tag_sets中随机抽取num_tags个tag
         prompt = ", ".join(selected_tags)  # 将选中的tag拼接成英文逗号分隔的字符串
+        max_lora = min(len(lora_list), 2)
+        num_loras = random.randint(0, max_lora)
+        selected_lora = random.sample(lora_list, num_loras)
+        final_lora = []
+        for lora in lora_list:
+            final_lora.append(lora + str(round(random.uniform(0.1, 0.9), 1)) + ">")
+        lora_str = ", ".join(final_lora)
+        prompt = prompt + ", " + lora_str
         await drawer.send(f"因为您没有指定prompt, prompt随机指定为{prompt}", at_sender=True)
 
     # 获取用户名
