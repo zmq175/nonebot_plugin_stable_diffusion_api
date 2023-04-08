@@ -19,6 +19,7 @@ from .worker import get_data
 
 from nonebot import require
 from .taskQueue import TaskQueue
+from googletrans import Translator
 
 require("nonebot_plugin_apscheduler")
 
@@ -86,6 +87,23 @@ async def _(args: ParserExit = ShellCommandArgs()):
                         f"<lora:stLouisLuxuriousWheels_v1:1> <lora:yaemikoTest.Yof9:1>")
 
 
+def translate_to_english(text):
+    """
+    检测输入字符串是否有中文，如果有中文则调用谷歌翻译翻译为英语，返回字符串
+    :param text: 输入字符串
+    :return: 翻译后的英文字符串
+    """
+    # 判断字符串是否包含中文字符
+    for char in text:
+        if '\u4e00' <= char <= '\u9fff':
+            # 包含中文，翻译成英文并返回
+            translator = Translator()
+            result = translator.translate(text, dest='en').text
+            return result
+
+    # 不包含中文，直接返回原字符串
+    return text
+
 
 @drawer.handle()
 async def drawer_task(event: MessageEvent, bot: Bot, args: Namespace = ShellCommandArgs()):
@@ -136,6 +154,8 @@ async def drawer_task(event: MessageEvent, bot: Bot, args: Namespace = ShellComm
         lora_str = ", ".join(final_lora)
         prompt = prompt + ", " + lora_str
         await drawer.send(f"因为您没有指定prompt, prompt随机指定为{prompt}", at_sender=True)
+
+    prompt = translate_to_english(prompt)
 
     # 获取用户名
     name = (await bot.get_stranger_info(user_id=int(id_)))["nickname"]
