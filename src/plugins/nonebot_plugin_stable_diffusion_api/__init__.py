@@ -6,6 +6,7 @@ from base64 import b64decode
 from random import randint
 
 import nonebot
+import requests
 from colorama import Fore
 from nonebot import logger
 from nonebot.adapters.onebot.v11 import MessageEvent, Bot, MessageSegment, ActionFailed
@@ -19,7 +20,6 @@ from .worker import get_data
 
 from nonebot import require
 from .taskQueue import TaskQueue
-from googletrans import Translator
 
 require("nonebot_plugin_apscheduler")
 
@@ -89,17 +89,27 @@ async def _(args: ParserExit = ShellCommandArgs()):
 
 def translate_to_english(text):
     """
-    检测输入字符串是否有中文，如果有中文则调用谷歌翻译翻译为英语，返回字符串
+    检测输入字符串是否有中文，如果有中文则调用Google翻译API将其翻译为英语，返回字符串
     :param text: 输入字符串
     :return: 翻译后的英文字符串
     """
     # 判断字符串是否包含中文字符
     for char in text:
         if '\u4e00' <= char <= '\u9fff':
-            # 包含中文，翻译成英文并返回
-            translator = Translator()
-            result = translator.translate(text, dest='en').text
-            return result
+            # 包含中文，调用Google翻译API进行翻译
+            url = 'https://translate.google.com/translate_a/single'
+            headers = {'User-Agent': 'Mozilla/5.0'}
+            params = {
+                'client': 'webapp',
+                'sl': 'zh-CN',
+                'tl': 'en',
+                'dt': 't',
+                'q': text,
+            }
+            response = requests.get(url, headers=headers, params=params)
+            result_list = response.json()[0]
+            result_text = ''.join([d[0] for d in result_list])
+            return result_text
 
     # 不包含中文，直接返回原字符串
     return text
