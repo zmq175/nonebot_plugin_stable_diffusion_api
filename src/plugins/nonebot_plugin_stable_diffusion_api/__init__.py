@@ -1,3 +1,4 @@
+import hashlib
 import json
 import random
 import threading
@@ -89,27 +90,31 @@ async def _(args: ParserExit = ShellCommandArgs()):
 
 def translate_to_english(text):
     """
-    检测输入字符串是否有中文，如果有中文则调用Google翻译API将其翻译为英语，返回字符串
+    检测输入字符串是否有中文，如果有中文则调用百度翻译API将其翻译为英语，返回字符串
     :param text: 输入字符串
     :return: 翻译后的英文字符串
     """
     # 判断字符串是否包含中文字符
     for char in text:
         if '\u4e00' <= char <= '\u9fff':
-            # 包含中文，调用Google翻译API进行翻译
-            url = 'https://translate.google.com/translate_a/single'
-            headers = {'User-Agent': 'Mozilla/5.0'}
-            params = {
-                'client': 'webapp',
-                'sl': 'zh-CN',
-                'tl': 'en',
-                'dt': 't',
+            # 包含中文，调用百度翻译API进行翻译
+            url = 'http://api.fanyi.baidu.com/api/trans/vip/translate'
+            app_id = '20230409001634195'  # 请替换成你的百度翻译应用ID
+            app_key = 'JHpTEe0bl2NxR3H1TgHL'  # 请替换成你的百度翻译应用密钥
+            salt = str(random.randint(1, 65536))
+            sign = app_id + text + salt + app_key
+            sign_md5 = hashlib.md5(sign.encode('utf-8')).hexdigest()
+            data = {
                 'q': text,
+                'from': 'zh',
+                'to': 'en',
+                'appid': app_id,
+                'salt': salt,
+                'sign': sign_md5,
             }
-            response = requests.get(url, headers=headers, params=params)
-            result_list = response.json()[0]
-            result_text = ''.join([d[0] for d in result_list])
-            return result_text
+            response = requests.post(url, data=data)
+            result_dict = json.loads(response.text)
+            return result_dict['trans_result'][0]['dst']
 
     # 不包含中文，直接返回原字符串
     return text
