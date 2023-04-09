@@ -25,7 +25,7 @@ from .taskQueue import TaskQueue
 require("nonebot_plugin_apscheduler")
 
 from nonebot_plugin_apscheduler import scheduler
-import deeplapi
+import deepl
 
 global_config = nonebot.get_driver().config
 config = Config.parse_obj(global_config)
@@ -100,8 +100,9 @@ def translate_to_english(text):
         if '\u4e00' <= char <= '\u9fff':
             # 包含中文，调用Deepl翻译API进行翻译
             api_key = 'd4462d35-a54d-0caa-ff7d-097b3812fc92:fx'  # 请替换成你的Deepl API密钥
-            result_dict = deeplapi.translate(api_key, text, target_lang='EN')
-            return result_dict['translations'][0]['text']
+            translator = deepl.Translator(api_key)
+            result = translator.translate_text(text, target_lang="EN-GB")
+            return result.text
 
     # 不包含中文，直接返回原字符串
     return text
