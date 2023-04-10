@@ -14,6 +14,7 @@ from nonebot.adapters.telegram import MessageSegment as TelegramMessageSegment
 from nonebot.adapters.telegram import Bot as TelegramBot
 from nonebot.adapters.telegram import Event as TelegramEvent
 from nonebot.adapters.telegram.exception import ActionFailed as TelegramActionFailed
+from nonebot.adapters.telegram.message import File
 from nonebot.exception import ParserExit
 from nonebot.params import CommandArg, RegexDict, ShellCommandArgs
 from nonebot.plugin.on import on_command, on_regex, on_shell_command
@@ -193,7 +194,7 @@ async def telegram_task(event: TelegramEvent, bot: TelegramBot, args: Namespace 
         await drawer.finish("生成失败！")
 
     image = b64decode(data[1])
-    msg = MessageSegment.image(image)
+    msg = File.photo(image)
     try:
         (await drawer.send(msg))
     except TelegramActionFailed:
