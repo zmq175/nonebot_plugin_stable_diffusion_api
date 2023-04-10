@@ -7,10 +7,13 @@ from base64 import b64decode
 from random import randint
 
 import nonebot
-import requests
 from colorama import Fore
 from nonebot import logger
-from nonebot.adapters.onebot.v11 import MessageEvent, Bot, MessageSegment, ActionFailed
+from nonebot.adapters.onebot.v11 import MessageEvent, Bot, MessageSegment, ActionFailed, Event
+from nonebot.adapters.telegram import MessageSegment as TelegramMessageSegment
+from nonebot.adapters.telegram import Bot as TelegramBot
+from nonebot.adapters.telegram import Event as TelegramEvent
+from nonebot.adapters.telegram.exception import ActionFailed as TelegramActionFailed
 from nonebot.exception import ParserExit
 from nonebot.params import CommandArg, RegexDict, ShellCommandArgs
 from nonebot.plugin.on import on_command, on_regex, on_shell_command
@@ -106,6 +109,95 @@ def translate_to_english(text):
 
     # 不包含中文，直接返回原字符串
     return text
+
+
+@drawer.handle()
+async def telegram_task(event: TelegramEvent, bot: TelegramBot, args: Namespace = ShellCommandArgs()):
+    logger.info(f"args: {args}")
+    id_ = event.get_user_id()
+    logger.info(f"start task for id {id_}")
+
+    seed = args.seed
+    scale = args.scale
+    steps = args.steps
+    size = args.size
+    prompt = args.prompt
+    uc = "lowres, bad anatomy, bad hands, text, error, missing fingers, extra digit, fewer digits, cropped, worst quality, low quality, normal quality, jpeg artifacts, signature, watermark, username, blurry"
+    sampler = args.sampler
+    if not args.negative == "":
+        uc = args.negative
+
+    if seed is None or seed == -1:
+        seed = randint(0, pow(2, 32))
+    if scale is None or scale == -1:
+        scale = 12
+    if steps is None or steps == -1:
+        steps = 28
+    if size is None or size == "":
+        size = "512x768"
+    if sampler is None or sampler == "":
+        sampler = "DPM++ 2M Karras"
+
+    try:
+        size = size.split("x")
+    except AttributeError:
+        size = [512, 512]
+    size = [int(size[0]), int(size[1])]
+    if size[0] > 2048 or size[1] > 2048:
+        drawer.finish("图片尺寸过大，请重新输入！")
+        return
+
+    if prompt is None or prompt == "":
+        max_num_tags = min(len(tag_sets), 30)  # 设置允许的最大随机数为50，或者tag_sets的长度，以防止出现超出范围的随机数
+        num_tags = random.randint(1, max_num_tags)  # 生成一个1到max_num_tags之间的随机数，作为抽取的tag数量
+        selected_tags = random.sample(tag_sets, num_tags)  # 从tag_sets中随机抽取num_tags个tag
+        prompt = ", ".join(selected_tags)  # 将选中的tag拼接成英文逗号分隔的字符串
+        num_loras = random.randint(0, 2)
+        selected_lora = random.sample(lora_list, num_loras)
+        final_lora = []
+        for lora in selected_lora:
+            final_lora.append(lora + str(round(random.uniform(0.1, 0.9), 1)) + ">")
+        lora_str = ", ".join(final_lora)
+        prompt = prompt + ", " + lora_str
+        await drawer.send(f"因为您没有指定prompt, prompt随机指定为{prompt}")
+
+    prompt = translate_to_english(prompt)
+
+    await drawer.send("正在生成图片，请稍等...")
+    logger.info(
+        Fore.LIGHTYELLOW_EX +
+        f"\n开始生成{event.get_user_id}的图片："
+        f"\nscale={scale}"
+        f"\nsteps={steps}"
+        f"\nsize={size[0]},{size[1]}"
+        f"\nseed={seed}"
+        f"\nprompt={prompt}"
+        f"\nnegative prompt={uc}"
+    )
+
+    data = await get_data(
+        post_url=post_url + "sdapi/v1/txt2img",
+        size=size,
+        prompt=prompt,
+        timeout=10 * 60 * 1000,
+        uc=uc, steps=steps,
+        scale=scale,
+        seed=seed,
+        sampler=sampler,
+        config=config,
+        hires=args.hires
+    )
+
+    if data[0] is False:
+        logger.error(Fore.LIGHTRED_EX + f"后端请求失败：{data[1]}")
+        await drawer.finish("生成失败！")
+
+    image = b64decode(data[1])
+    msg = MessageSegment.image(image)
+    try:
+        msg_id = (await drawer.send(msg))["message_id"]
+    except TelegramActionFailed:
+        logger.warning(Fore.LIGHTYELLOW_EX + f"可能被风控，请稍后再试！")
 
 
 @drawer.handle()
