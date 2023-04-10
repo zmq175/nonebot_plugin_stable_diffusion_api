@@ -195,7 +195,7 @@ async def telegram_task(event: TelegramEvent, bot: TelegramBot, args: Namespace 
     image = b64decode(data[1])
     msg = MessageSegment.image(image)
     try:
-        msg_id = (await drawer.send(msg))["message_id"]
+        (await drawer.send(msg))
     except TelegramActionFailed:
         logger.warning(Fore.LIGHTYELLOW_EX + f"可能被风控，请稍后再试！")
 
