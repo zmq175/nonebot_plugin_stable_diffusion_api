@@ -88,7 +88,8 @@ async def get_data(post_url, config, prompt, timeout,
         "negative_prompt": uc,
         "enable_hr": hires,
         "restore_faces": True,
-        "hr_upscaler": "Latent"
+        "hr_upscaler": "Nearest",
+        "denoising_strength": 0.7
     }
 
     headers = {
