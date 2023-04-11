@@ -87,7 +87,8 @@ async def get_data(post_url, config, prompt, timeout,
         "steps": steps,
         "negative_prompt": uc,
         "enable_hr": hires,
-        "restore_faces": True
+        "restore_faces": True,
+        "hr_upscaler": "Latent"
     }
 
     headers = {
