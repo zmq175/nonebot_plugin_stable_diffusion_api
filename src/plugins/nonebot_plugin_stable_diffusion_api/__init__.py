@@ -207,6 +207,9 @@ async def drawer_task(event: MessageEvent, bot: Bot, args: Namespace = ShellComm
     id_ = event.get_user_id()
     logger.info(f"start task for id {id_}")
 
+    if id_ == "3388108457":
+        drawer.finish("江西人也好意思用机器人？？？", at_sender=True)
+
     seed = args.seed
     scale = args.scale
     steps = args.steps
