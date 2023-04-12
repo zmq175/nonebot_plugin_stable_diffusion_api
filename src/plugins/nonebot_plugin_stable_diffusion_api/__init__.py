@@ -207,8 +207,9 @@ async def drawer_task(event: MessageEvent, bot: Bot, args: Namespace = ShellComm
     id_ = event.get_user_id()
     logger.info(f"start task for id {id_}")
 
-    if id_.strip() == "3388108457":
-        drawer.finish("江西人也好意思用机器人？？？", at_sender=True)
+    if id_.strip() == "3388108457" or "3388108457" in id_:
+        await drawer.finish("江西人也好意思用机器人？？？", at_sender=True)
+        return
     else:
         logger.info(f"user_id:{id_}")
 
