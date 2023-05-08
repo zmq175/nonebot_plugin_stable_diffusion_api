@@ -81,6 +81,6 @@ Nonebot2的AI画图插件
 ### 指令表
 | 指令 | 权限 | 需要@ | 范围 | 说明 |
 |:-----:|:----:|:----:|:----:|:----:|
-| AI画图 | 群员 | 否 | 群聊/私聊 | 进行画图，-h, --help           show help message and exit --seed SEED --scale SCALE  --steps STEPS  --size SIZE  --prompt PROMPT  --negative NEGATIVE  --sampler SAMPLER  --hires, 目前支持的Lora模型列表如下： <lora:ArknightsChen5concept_10:1> <lora:ArknightsNian_20:1> <lora:AzumaSeren_v10:1> <lora:Bremerton (Kung Fu Cruiser) (Azur Lane):1> <lora:GawrGuraFlatisJustice:1> <lora:Lucy (Cyberpunk Edgerunners):1> <lora:Raiden Shogun:1> <lora:Rem_RE Zero:1> <lora:Shengren:1> <lora:YDLunaCos:1> <lora:YaeMikoRealisticGenshin:1> <lora:Yuefu:1> <lora:Yuta:1> <lora:aliceNikke_v30:1> <lora:arknightsTexas20the.uDnD:1> <lora:banbanbai:1> <lora:corruption_v1:1> <lora:godChineseGirl:1> <lora:hmsCheshireAzurLane_delta:1> <lora:iuV35.uv1P:1> <lora:kanameMadoka_delta:1> <lora:minatoaqua_trSafe:1> <lora:necoStyleLora_v10:1> <lora:punishingGreyRaven_v10:1> <lora:shutenDoujiFateGO_shuten:1> <lora:stLouisLuxuriousWheels_v1:1> <lora:yaemikoTest.Yof9:1> |
+| AI画图 | 群员 | 否 | 群聊/私聊 | 进行画图，-h, --help           show help message and exit --seed SEED --scale SCALE  --steps STEPS  --size SIZE  --prompt PROMPT  --negative NEGATIVE  --sampler SAMPLER  --hires, LORA参考lora.json修改|
 ### 效果图
 如果有效果图的话
