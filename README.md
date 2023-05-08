@@ -8,14 +8,14 @@
 
 # nonebot_plugin_stable_diffusion_api
 
-_✨ NoneBot 插件简单描述 ✨_
+_✨ NoneBot AI画图插件 ✨_
 
 
 <a href="./LICENSE">
-    <img src="https://img.shields.io/github/license/zmq175/nonebot-plugin-yuefu.svg" alt="license">
+    <img src="https://img.shields.io/github/license/zmq175/nonebot_plugin_stable_diffusion_api.svg" alt="license">
 </a>
-<a href="https://pypi.python.org/pypi/nonebot-plugin-yuefu">
-    <img src="https://img.shields.io/pypi/v/nonebot-plugin-yuefu.svg" alt="pypi">
+<a href="https://pypi.python.org/pypi/nonebot_plugin_stable_diffusion_api">
+    <img src="https://img.shields.io/pypi/v/nonebot_plugin_stable_diffusion_api.svg" alt="pypi">
 </a>
 <img src="https://img.shields.io/badge/python-3.8+-blue.svg" alt="python">
 
@@ -74,14 +74,13 @@ Nonebot2的AI画图插件
 
 | 配置项 | 必填 | 默认值 | 说明 |
 |:-----:|:----:|:----:|:----:|
-| 配置项1 | 是 | 无 | 配置说明 |
-| 配置项2 | 否 | 无 | 配置说明 |
+| stable_url | 是 | 无 | 绘图地址 |
+| stable_auth | 否 | 无 | 是否需要加header进行认证 |
 
 ## 🎉 使用
 ### 指令表
 | 指令 | 权限 | 需要@ | 范围 | 说明 |
 |:-----:|:----:|:----:|:----:|:----:|
-| 指令1 | 主人 | 否 | 私聊 | 指令说明 |
-| 指令2 | 群员 | 是 | 群聊 | 指令说明 |
+| AI画图 | 群员 | 否 | 群聊/私聊 | 进行画图，-h, --help           show help message and exit --seed SEED --scale SCALE  --steps STEPS  --size SIZE  --prompt PROMPT  --negative NEGATIVE  --sampler SAMPLER  --hires, 目前支持的Lora模型列表如下： <lora:ArknightsChen5concept_10:1> <lora:ArknightsNian_20:1> <lora:AzumaSeren_v10:1> <lora:Bremerton (Kung Fu Cruiser) (Azur Lane):1> <lora:GawrGuraFlatisJustice:1> <lora:Lucy (Cyberpunk Edgerunners):1> <lora:Raiden Shogun:1> <lora:Rem_RE Zero:1> <lora:Shengren:1> <lora:YDLunaCos:1> <lora:YaeMikoRealisticGenshin:1> <lora:Yuefu:1> <lora:Yuta:1> <lora:aliceNikke_v30:1> <lora:arknightsTexas20the.uDnD:1> <lora:banbanbai:1> <lora:corruption_v1:1> <lora:godChineseGirl:1> <lora:hmsCheshireAzurLane_delta:1> <lora:iuV35.uv1P:1> <lora:kanameMadoka_delta:1> <lora:minatoaqua_trSafe:1> <lora:necoStyleLora_v10:1> <lora:punishingGreyRaven_v10:1> <lora:shutenDoujiFateGO_shuten:1> <lora:stLouisLuxuriousWheels_v1:1> <lora:yaemikoTest.Yof9:1> |
 ### 效果图
 如果有效果图的话
